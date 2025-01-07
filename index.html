@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>클로버님</title>
     <style>
-        /* 기본 스타일 */
         body {
             background: #DDC7A7;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -16,7 +15,7 @@
             margin: 0;
             text-align: center;
             color: #333;
-            flex-direction: column; /* 수직 정렬 */
+            flex-direction: column;
         }
 
         h1 {
@@ -28,46 +27,43 @@
             background: #FAFAD2;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             word-wrap: break-word;
-            opacity: 0; /* 처음에 투명하게 설정 */
-            transform: scale(0.5); /* 처음에는 작게 보이도록 */
-            animation: popIn 4s forwards; /* 애니메이션 적용 */
+            opacity: 0; 
+            transform: scale(0.5); 
+            animation: popIn 1s forwards; 
         }
 
-        /* '뿅' 하는 효과 */
         @keyframes popIn {
             0% {
                 opacity: 0;
-                transform: scale(0.5); /* 처음에는 작게 */
+                transform: scale(0.5); 
             }
             60% {
                 opacity: 1;
-                transform: scale(1.1); /* 잠시 커짐 */
+                transform: scale(1.1); 
             }
             100% {
                 opacity: 1;
-                transform: scale(1); /* 최종 크기로 안정화 */
+                transform: scale(1); 
             }
         }
 
         h1:hover {
-            transform: scale(1.05); /* 커지는 범위 제한 */
+            transform: scale(1.05); 
         }
 
-        /* 네잎클로버 이미지 스타일 */
         .clover {
             width: 250px;
             height: 250px;
-            background: url('cloverclover.png') no-repeat center center;
+            background: url('clovergod.png') no-repeat center center;
             background-size: contain;
             background-color: #DDC7A7;
-            position: relative; /* 자식 요소가 절대위치에 놓이기 위해 */ 
+            position: relative; 
         }
 
-        /* 말풍선 스타일 */
         .speech-bubble {
             position: absolute;
-            top: -23px; /* 말풍선을 이미지 위로 이동 */
-            left: 51.6%;
+            top: -17px; 
+            left: 50.0%;
             transform: translateX(-50%);
             background-color: #FAFAD2;
             color: #388E3C;
@@ -81,11 +77,10 @@
             font-size: 12px;
         }
 
-        /* 말풍선의 삼각형 꼬리 부분 */
         .speech-bubble::after {
             content: '';
             position: absolute;
-            bottom: -10px; /* 말풍선 아래쪽에 꼬리를 추가 */
+            bottom: -10px; 
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -94,11 +89,50 @@
             border-right: 10px solid transparent;
             border-top: 10px solid #FAFAD2;
         }
+
+        .countdown {
+            font-size: 100px;
+            color: #388E3C;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0.5);
+            animation: popIn 1s forwards;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
     <script>
         window.onload = function() {
-            // 메시지 리스트
-            const messages = [
+            const countdownNumbers = [3, 2, 1];
+            const messageElement = document.getElementById("message");
+            let index = 0;
+
+            function showNextCountdown() {
+                if (index < countdownNumbers.length) {
+                    messageElement.style.display = 'block';
+                    messageElement.innerText = countdownNumbers[index];
+                    messageElement.style.opacity = '0';
+                    messageElement.style.transform = 'scale(0.5)';
+                    messageElement.style.animation = 'none'; // 애니메이션 초기화
+                    
+                    // 강제 리플로우로 스타일 초기화 적용
+                    void messageElement.offsetWidth;
+                    
+                    messageElement.style.animation = 'popIn 1s forwards'; // 애니메이션 재적용
+
+                    setTimeout(() => {
+                        index++;
+                        showNextCountdown();
+                    }, 1000);
+                } else {
+                    showPageContent();
+                }
+            }
+
+            function showPageContent() {
+                const messages = [
                 "절대 아니다.",
                 "실행에 옮기면 좋아질 것이다.",
                 "우선순위를 정하는 것이 필수과정이다.",
@@ -135,11 +169,11 @@
                 "다시 돌아보아라.",
                 "잘못된 선택일 수 있다.",
                 "멈춰라.",
-                "직감을 믿어라..",
+                "직감을 믿어라.",
                 "잘 될 거다.",
                 "당신이 자주 듣는 노래에 답이 있다.",
                 "감정에 휘둘리지 않도록 주의해라.",
-                "가장 단순한 해결책이 종종 가장 효과적이다..",
+                "가장 단순한 해결책이 종종 가장 효과적이다.",
                 "지금이 아니라면 언제가 적절한 시기인가.",
                 "더는 시간을 낭비하지 마라.",
                 "그 길을 걷는 용기를 가져라.",
@@ -245,40 +279,59 @@
                 "무너지지 마라.",
                 "소중한 사람에게 물어봐라.",
                 "선행은 반드시 행운을 가져온다. 한가지 선행을 해보자.",
-                "여름.",
-                "겨울.",
-                "가을.",
-                "봄.",
+                "여름",
+                "겨울",
+                "가을",
+                "봄",
                 "자존심을 버려라.",
                 "게으른 사람에겐 행운은 없다. 움직여라.",
                 "성실,노력,인내",
-                "보통.",
+                "보통",
                 "평범하다.",
-                "우주.",
-                "태양.",
-                "별.",
+                "우주",
+                "태양",
+                "별",
                 "겸손이 필요하다.",
                 "가보자.",
                 "다른 방법을 생각하는게 좋을 수도 있다.",
                 "좋다.",
-                "별로다."
-
-
+                "별로다.",
+                "확실하다. 더 볼 필요가 없다.",
+                "냉정하게 판단하면 좋은 결과가 따라올 것이다.",
+                "의심이 든다면 멈춰라.",
+                "주변의 작은 신호를 놓치지 마라.",
+                "다른 길이 더 쉬울 수 있다.",
+                "너의 본능을 존중해라.",
+                "균형을 맞춰라.",
+                "시도해볼 가치가 있다.",
+                "지금은 답이 없을 수도 있다.",
+                "너무 많은 걸 바라지 마라.",
+                "때로는 포기가 정답이다.",
+                "당장은 아무것도 바꿀 수 없다.",
+                "기대는 독이 될 수 있다.",
+                "감정 빼고 생각해라. 그게 답이다.",
+                "네가 바뀌어야 할 때다."
             ];
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                messageElement.innerText = randomMessage;
+                messageElement.style.opacity = '0';
+                messageElement.style.transform = 'scale(0.5)';
+                messageElement.style.animation = 'none'; // 애니메이션 초기화
+                
+                // 강제 리플로우로 스타일 초기화 적용
+                void messageElement.offsetWidth;
+                
+                messageElement.style.animation = 'popIn 4s 0.5s forwards'; // 애니메이션 재적용
+            }
 
-            // 랜덤으로 문구 선택 후 표시
-            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-            document.getElementById("message").innerText = randomMessage;
+            showNextCountdown();
         }
     </script>
 </head>
 <body>  
-    <!-- 네잎클로버 이미지 -->
     <div class="clover">
-        <!-- 말풍선 추가 -->
-        <div class="speech-bubble" id="bubble-message">행운을 선물하는 클로버 입니다!!</div>
+        <div class="speech-bubble" id="bubble-message">무엇이든 물어보세요</div>
     </div> 
-
-    <h1 id="message">생각 중...잠시만 기다려주세요...</h1>  
+    <h1 id="message">생각중...</h1>  
 </body>
 </html>
