@@ -16,7 +16,7 @@
             text-align: center;
             color: #333;
             flex-direction: column;
-            transition: background-color 1s;
+            transition: background-color 1s ease, color 1s ease; /* 배경색과 글자 색의 자연스러운 전환 */
         }
 
         h1 {
@@ -38,6 +38,10 @@
                 opacity: 0;
                 transform: scale(0.5);
             }
+            60% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
             100% {
                 opacity: 1;
                 transform: scale(1);
@@ -50,6 +54,7 @@
             background: url('clovergod.png') no-repeat center center;
             background-size: contain;
             position: relative;
+            transition: box-shadow 1s ease; /* 그림자 색 변화의 자연스러운 전환 */
         }
 
         .speech-bubble {
@@ -80,15 +85,6 @@
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
             border-top: 10px solid #FAFAD2;
-        }
-
-        .countdown {
-            font-size: 100px;
-            color: #388E3C;
-            font-weight: bold;
-            opacity: 0;
-            transform: scale(0.5);
-            animation: popIn 2s forwards;
         }
 
         .hidden {
@@ -282,18 +278,29 @@
                 "네가 바뀌어야 할 때다.": "#FF6347"
             };
 
+            // 메시지 표시 및 애니메이션 적용 함수
+            function showMessageWithAnimation(message, color) {
+                messageElement.innerText = message;
+                document.body.style.backgroundColor = color;
+                cloverElement.style.boxShadow = `0 0 15px ${color}`;
+
+                // 애니메이션 초기화 및 재적용
+                messageElement.style.opacity = '0';
+                messageElement.style.transform = 'scale(0.5)';
+                messageElement.style.animation = 'none';
+
+                // 메시지가 보이도록 hidden 클래스 제거
+                messageElement.classList.remove("hidden");
+
+                void messageElement.offsetWidth;
+
+                messageElement.style.animation = 'popIn 2s forwards';
+            }
+
+            // 카운트다운 진행 함수
             function showNextCountdown() {
                 if (index < countdownNumbers.length) {
-                    messageElement.style.display = 'block';
-                    messageElement.innerText = countdownNumbers[index];
-                    messageElement.style.opacity = '0';
-                    messageElement.style.transform = 'scale(0.5)';
-                    messageElement.style.animation = 'none'; // 애니메이션 초기화
-                    
-                    void messageElement.offsetWidth;
-                    
-                    messageElement.style.animation = 'popIn 2s forwards'; // 애니메이션 재적용
-
+                    showMessageWithAnimation(countdownNumbers[index], "#DDC7A7");
                     setTimeout(() => {
                         index++;
                         showNextCountdown();
@@ -303,6 +310,7 @@
                 }
             }
 
+            // 최종 페이지 내용 표시 함수
             function showPageContent() {
                 const messages = [
                 "절대 아니다.",
@@ -486,22 +494,13 @@
                 ];
 
                 const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-                messageElement.innerText = randomMessage;
-
-                // 문구에 맞는 배경색을 선택
                 const randomColor = backgroundColors[randomMessage] || "#DDC7A7"; // 기본 색상
-                document.body.style.backgroundColor = randomColor; // 배경색 변경
-                cloverElement.style.backgroundColor = randomColor; // 클로버 배경색 변경
 
-                messageElement.style.opacity = '0';
-                messageElement.style.transform = 'scale(0.5)';
-                messageElement.style.animation = 'none'; // 애니메이션 초기화
-
-                void messageElement.offsetWidth;
-                
-                messageElement.style.animation = 'popIn 2s forwards'; // 애니메이션 적용
+                // 문구에 맞는 메시지와 배경색 적용
+                showMessageWithAnimation(randomMessage, randomColor);
             }
 
+            // 카운트다운 시작
             showNextCountdown();
         };
     </script>
