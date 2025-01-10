@@ -6,7 +6,7 @@
     <title>클로버님</title>
     <style>
         body {
-            background: #DDC7A7;
+            background: #DDC7A7; /* 기본 배경색 */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
@@ -16,6 +16,7 @@
             text-align: center;
             color: #333;
             flex-direction: column;
+            transition: background-color 1s;
         }
 
         h1 {
@@ -27,28 +28,20 @@
             background: #FAFAD2;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             word-wrap: break-word;
-            opacity: 0; 
-            transform: scale(0.5); 
-            animation: popIn 1s forwards; 
+            opacity: 0;
+            transform: scale(0.5);
+            animation: popIn 2s forwards;
         }
 
         @keyframes popIn {
             0% {
                 opacity: 0;
-                transform: scale(0.5); 
-            }
-            60% {
-                opacity: 1;
-                transform: scale(1.1); 
+                transform: scale(0.5);
             }
             100% {
                 opacity: 1;
-                transform: scale(1); 
+                transform: scale(1);
             }
-        }
-
-        h1:hover {
-            transform: scale(1.05); 
         }
 
         .clover {
@@ -56,14 +49,13 @@
             height: 250px;
             background: url('clovergod.png') no-repeat center center;
             background-size: contain;
-            background-color: #DDC7A7;
-            position: relative; 
+            position: relative;
         }
 
         .speech-bubble {
             position: absolute;
-            top: -17px; 
-            left: 50.0%;
+            top: -17px;
+            left: 50%;
             transform: translateX(-50%);
             background-color: #FAFAD2;
             color: #388E3C;
@@ -80,7 +72,7 @@
         .speech-bubble::after {
             content: '';
             position: absolute;
-            bottom: -10px; 
+            bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -96,7 +88,7 @@
             font-weight: bold;
             opacity: 0;
             transform: scale(0.5);
-            animation: popIn 1s forwards;
+            animation: popIn 2s forwards;
         }
 
         .hidden {
@@ -107,7 +99,188 @@
         window.onload = function() {
             const countdownNumbers = [3, 2, 1];
             const messageElement = document.getElementById("message");
+            const cloverElement = document.querySelector(".clover");
             let index = 0;
+
+            const backgroundColors = {
+                "실행에 옮기면 좋아질 것이다.": "#32CD32",
+                "우선순위를 정하는 것이 필수과정이다.": "#FFA500",
+                "등장 밑이 어둡다.": "#000000",
+                "상황이 급변하게 될 것이다.": "#FF6347",
+                "예기치 못한 일들에 대비하라.": "#FFD700",
+                "좋은 결정을 하기 위해서는 침착해라.": "#1E90FF",
+                "지금 당장 행동에 옮겨라.": "#008000",
+                "명백하다.": "#FFFFFF",
+                "다른 상황으로 이어지는 중요한 열쇠고리가 있다.": "#A52A2A",
+                "즐기는 것 또한 잊지마라.": "#FF69B4",
+                "기회라고 생각해라.": "#FFFF00",
+                "아마도.": "#D3D3D3",
+                "확신을 가져라.": "#228B22",
+                "어머니께 여쭈어라.": "#FF1493",
+                "아버지께 여쭈어라.": "#8B4513",
+                "기다리는 편이 낫다.": "#D3D3D3",
+                "더 나은 제안을 기다려라.": "#B0E0E6",
+                "긍정적인 결과가 예상된다.": "#90EE90",
+                "더 이상 망설이지 말아라.": "#FF4500",
+                "신중하게 접근하라.": "#A9A9A9",
+                "꼭 해야한다.": "#DC143C",
+                "아니요.": "#B22222",
+                "대가를 치뤄야 할 것이다.": "#8B0000",
+                "애초의 생각을 믿어라.": "#7FFF00",
+                "예.": "#32CD32",
+                "예스.": "#4CAF50",
+                "적극적인 자세로 임하라.": "#FF5733",
+                "절대로.": "#8B0000",
+                "지금 시작해라.": "#FFFF00",
+                "더 큰 그림을 보아라.": "#4682B4",
+                "쉬어도 괜찮다.": "#FFDAB9",
+                "도움을 요청해라.": "#ADD8E6",
+                "다시 돌아보아라.": "#B0C4DE",
+                "잘못된 선택일 수 있다.": "#808080",
+                "멈춰라.": "#000000",
+                "직감을 믿어라.": "#C71585",
+                "잘 될 거다.": "#98FB98",
+                "당신이 자주 듣는 노래에 답이 있다.": "#8A2BE2",
+                "감정에 휘둘리지 않도록 주의해라.": "#DC143C",
+                "가장 단순한 해결책이 종종 가장 효과적이다.": "#FFD700",
+                "지금이 아니라면 언제가 적절한 시기인가.": "#FF4500",
+                "더는 시간을 낭비하지 마라.": "#FF0000",
+                "그 길을 걷는 용기를 가져라.": "#00008B",
+                "주변의 소음에 휘둘리지 마라.": "#708090",
+                "지금 필요한 건 인내심.": "#8B4513",
+                "확신이 없다면 하지 마라.": "#2F4F4F",
+                "무조건.": "#FF0000",
+                "지금의 선택이 미래를 결정 할 것이다.": "#800080",
+                "꾸준함은 결코 배신하지 않는다.": "#6A5ACD",
+                "미루지 마라.": "#FF6347",
+                "평소와는 다른 생각을 가지고 결정하라.": "#FFD700",
+                "넒은 세상을 한번 보아라 답이 있을 것이다.": "#87CEEB",
+                "노력에 따라 달라진다.": "#FF8C00",
+                "너의 직감을 믿어보면 된다.": "#C71585",
+                "새로운 기회가 널 기다린다.": "#32CD32",
+                "지금 최선을 다하라.": "#FF4500",
+                "시작이 반이다.": "#D2691E",
+                "한 우물만 파라.": "#8B4513",
+                "나만의 길을 걸어가면 된다.": "#800080",
+                "길을 만든는 사람은 결코 길을 잃지 않는다.": "#4682B4",
+                "고진감래.": "#8B0000",
+                "천 리 길도 한 걸음부터.": "#00008B",
+                "실패는 성공의 어머니.": "#FFD700",
+                "끝까지 가는 자가 승리한다.": "#FF6347",
+                "눈을 크게 떠라.": "#FF69B4",
+                "여유를 가져라.": "#B0E0E6",
+                "준비해라.": "#A9A9A9",
+                "자기 믿음이 가장 큰 힘이다.": "#8B4513",
+                "행동하지 않으면 아무 일도 일어나지 않는다.": "#FF0000",
+                "자신감은 행운도 부른다.": "#32CD32",
+                "가보자.": "#008000",
+                "기회는 쉽사리 오지 않을 것이다.": "#FF4500",
+                "제대로 준비 되었다는 가정 하에: 그렇지 않다면 꿈도 꾸지마라.": "#B22222",
+                "그렇다.": "#32CD32",
+                "웃어 넘겨라.": "#FF6347",
+                "예측 불가.": "#D3D3D3",
+                "경험을 즐겨라.": "#FFD700",
+                "숲 속에서는 숲을 보지 못한다.": "#2E8B57",
+                "현실적으로 생각해라.": "#A52A2A",
+                "하기 잘했다 할 것이다.": "#98FB98",
+                "넘어가라.": "#A9A9A9",
+                "기회를 잡아라.": "#FFD700",
+                "보장은 없다.": "#808080",
+                "새로운 계획을 세우기에 좋은 타이밍이다.": "#1E90FF",
+                "너무 성급히 행동해서는 안된다.": "#B0C4DE",
+                "그 어느 때보다 지금 가장 잘 알고있다.": "#228B22",
+                "장난스러운 호기심으로 접근해보라.": "#FF1493",
+                "기다리지 마라.": "#FF0000",
+                "선을 넘지마라.": "#8B0000",
+                "냉면.": "#F0E68C",
+                "아직은 무리다.": "#D3D3D3",
+                "이미지 변신이 필요하다.": "#FF6347",
+                "때로는 참는게 보약.": "#6A5ACD",
+                "기다려라": "#B0E0E6",
+                "반대가 있을 지도 모른다.": "#FFD700",
+                "곧 현실이 될거다.": "#8B4513",
+                "뻔한 것은 최선책이 아닐 수도 있다.": "#D2691E",
+                "쾌쾌 묵은 방법들은 과감히 버려라.": "#FF6347",
+                "장담하지 마라.": "#00008B",
+                "망설이지 마라.": "#FF0000",
+                "포기하지 말고 계속 나아가.": "#228B22",
+                "운이 따라 올 것이다. 널 믿을 때다.": "#32CD32",
+                "지금이 너의 최고의 순간이다.": "#FFD700",
+                "희망을 잃지 마라.": "#FF6347",
+                "좋게 해결 될 것이다.": "#98FB98",
+                "너의 주변에서 답을 찾을 수 있을 것이다.": "#D3D3D3",
+                "지금의 감정은 버리고 이성을 찾아라.": "#8B0000",
+                "운명이다.": "#800080",
+                "마무리 해야한다.": "#FF4500",
+                "최대한 업그레이드 시켜라.": "#1E90FF",
+                "그로 인해 멋진 일들이 일어날지도": "#FFD700",
+                "불확실하다.": "#D3D3D3",
+                "답은 다른 모습으로 나타날지도": "#FF6347",
+                "당신은 휴식이 필요하다": "#B0E0E6",
+                "노력하면 이루어진다.": "#32CD32",
+                "빨간색": "#FF0000",
+                "초록색": "#32CD32",
+                "지금은 단호함이 필요하다.": "#8B0000",
+                "한 발 더 나아가라.": "#228B22",
+                "돌다리도 두들겨라.": "#D3D3D3",
+                "인내는 쓰지만 그 열매는 달다": "#FFD700",
+                "타이밍을 놓치지 마라.": "#FF6347",
+                "가던 길을 멈추지 마라.": "#32CD32",
+                "나 자신을 더 믿어라.": "#32CD32",
+                "지금 당신은 변화의 한가운데에 있다.": "#FF4500",
+                "주변 사람들의 말을 경청하라.": "#A52A2A",
+                "당당하게 나아가라.": "#FFD700",
+                "새로운 관점을 가져라.": "#8A2BE2",
+                "인내는 새로운 문을 열 것이다.": "#6A5ACD",
+                "지금은 '도전'이 필요한 때다.": "#FF6347",
+                "이번에는 다를 것이다.": "#FF4500",
+                "새로운 가능성이 열릴 것이다.": "#228B22",
+                "한 걸음 물러서면 더 큰 그림이 보일 것이다.": "#A52A2A",
+                "소나기": "#ADD8E6",
+                "잠시 멈추면 답이 보일 것이다.": "#FFD700",
+                "모든 일들은 작은 움직임에서 시작된다.": "#32CD32",
+                "믿어라": "#4CAF50",
+                "준비해라": "#A9A9A9",
+                "미소를 지을 것이다.": "#FF6347",
+                "나비효과": "#FF69B4",
+                "눈을 감고 3초만 생각해라.": "#D3D3D3",
+                "흔들리지 마라.": "#FF0000",
+                "무너지지 마라.": "#8B0000",
+                "소중한 사람에게 물어봐라.": "#D2691E",
+                "선행은 반드시 행운을 가져온다. 한가지 선행을 해보자.": "#FF6347",
+                "여름": "#FFD700",
+                "겨울": "#ADD8E6",
+                "가을": "#FF6347",
+                "봄": "#32CD32",
+                "자존심을 버려라.": "#800080",
+                "게으른 사람에겐 행운은 없다. 움직여라.": "#FF4500",
+                "성실,노력,인내": "#8A2BE2",
+                "보통": "#D3D3D3",
+                "평범하다.": "#B0E0E6",
+                "우주": "#1E90FF",
+                "태양": "#FFD700",
+                "별": "#8A2BE2",
+                "겸손이 필요하다.": "#A9A9A9",
+                "가보자.": "#32CD32",
+                "다른 방법을 생각하는게 좋을 수도 있다.": "#FF6347",
+                "좋다.": "#32CD32",
+                "별로다.": "#FF6347",
+                "확실하다. 더 볼 필요가 없다.": "#228B22",
+                "냉정하게 판단하면 좋은 결과가 따라올 것이다.": "#00008B",
+                "의심이 든다면 멈춰라.": "#D3D3D3",
+                "주변의 작은 신호를 놓치지 마라.": "#FF6347",
+                "다른 길이 더 쉬울 수 있다.": "#B0E0E6",
+                "너의 본능을 존중해라.": "#C71585",
+                "균형을 맞춰라.": "#8A2BE2",
+                "시도해볼 가치가 있다.": "#FF6347",
+                "지금은 답이 없을 수도 있다.": "#D3D3D3",
+                "너무 많은 걸 바라지 마라.": "#A9A9A9",
+                "때로는 포기가 정답이다.": "#8B0000",
+                "당장은 아무것도 바꿀 수 없다.": "#D3D3D3",
+                "기대는 독이 될 수 있다.": "#8B4513",
+                "감정 빼고 생각해라. 그게 답이다.": "#32CD32",
+                "네가 바뀌어야 할 때다.": "#FF6347"
+            };
 
             function showNextCountdown() {
                 if (index < countdownNumbers.length) {
@@ -117,10 +290,9 @@
                     messageElement.style.transform = 'scale(0.5)';
                     messageElement.style.animation = 'none'; // 애니메이션 초기화
                     
-                    // 강제 리플로우로 스타일 초기화 적용
                     void messageElement.offsetWidth;
                     
-                    messageElement.style.animation = 'popIn 1s forwards'; // 애니메이션 재적용
+                    messageElement.style.animation = 'popIn 2s forwards'; // 애니메이션 재적용
 
                     setTimeout(() => {
                         index++;
@@ -311,27 +483,33 @@
                 "기대는 독이 될 수 있다.",
                 "감정 빼고 생각해라. 그게 답이다.",
                 "네가 바뀌어야 할 때다."
-            ];
+                ];
+
                 const randomMessage = messages[Math.floor(Math.random() * messages.length)];
                 messageElement.innerText = randomMessage;
+
+                // 문구에 맞는 배경색을 선택
+                const randomColor = backgroundColors[randomMessage] || "#DDC7A7"; // 기본 색상
+                document.body.style.backgroundColor = randomColor; // 배경색 변경
+                cloverElement.style.backgroundColor = randomColor; // 클로버 배경색 변경
+
                 messageElement.style.opacity = '0';
                 messageElement.style.transform = 'scale(0.5)';
                 messageElement.style.animation = 'none'; // 애니메이션 초기화
-                
-                // 강제 리플로우로 스타일 초기화 적용
+
                 void messageElement.offsetWidth;
                 
-                messageElement.style.animation = 'popIn 4s 0.5s forwards'; // 애니메이션 재적용
+                messageElement.style.animation = 'popIn 2s forwards'; // 애니메이션 적용
             }
 
             showNextCountdown();
-        }
+        };
     </script>
 </head>
-<body>  
+<body>
     <div class="clover">
-        <div class="speech-bubble" id="bubble-message">무엇이든 물어보세요</div>
-    </div> 
-    <h1 id="message">생각중...</h1>  
+        <div class="speech-bubble">무엇이든 물어보세요.</div>
+    </div>
+    <h1 id="message" class="hidden"></h1>
 </body>
 </html>
